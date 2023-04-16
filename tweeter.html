@@ -1,0 +1,235 @@
+<html>
+	<head>
+		<title>
+			Tweeter by Scott
+		</title>
+
+		<meta charset="utf-8"/>
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+		<style>
+			.tweet{
+				padding: 1em;
+				border: 1px solid #CCC;
+				border-radius: 3px;
+				margin-bottom: 1em;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body style="padding: 5em;">
+		<div class="container">
+			<div class="row">
+				<div class="column">
+					<center>
+						<h1>Tweet Gymnast by <a href="https://twitch.tv/scottfromtwitch">Scott</a></h1>
+						<h6>(it does splits)</h6>
+					</center>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="column column-offset-5">
+					<center>
+						<h4>DRAFT</h4>
+						<h5>(autosaves in cookie)</h5>
+						<textarea id="originalTweet" rows="30" style="width: 100%; height: auto;"></textarea>
+						<a class="button" id="resetButton" style="background-color: #dd2b2b; border: 1px solid #c41717;">Clear Draft</a>
+						<a class="button" id="splitButton">Do a split!</a>
+					</center>
+				</div>
+
+				<div class="column column-offset-5">
+					<center>
+						<h4>SPLIT TWEETS</h4>
+						<h5>(options)</h5>
+					</center>
+
+					<div id="resultTweets">
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+	<script>
+		// TODO: o Cookies to remember draft
+		//       o Split column layout, show results on right
+		//       o Instructions to click to copy
+		//       - Options and cookies for:
+		//         - Tweet count display tag
+		//         - Tweet count format
+		//           - Leading zeroes
+		//           - Show total
+		//           - Brackets (type or none at all)
+		//         - Ellipses
+
+		var lengthTag = " (XX/YY)";
+		var maxLength = 240 - lengthTag.length - 2; // 2 for ellipses characters
+		var ellipse = "…";
+
+		var cookieOpts = {
+			"path" : "",
+			"domain" : "blackwhitedog.com",
+			"Secure" : true,
+		};
+
+		var currBuf = "";
+		var completeSplit = [];
+
+		toastr.options = {
+			"closeButton": false,
+			"debug": false,
+			"newestOnTop": false,
+			"progressBar": false,
+			"positionClass": "toast-bottom-full-width",
+			"preventDuplicates": true,
+			"onclick": null,
+			"showDuration": "200",
+			"hideDuration": "200",
+			"timeOut": "2300",
+			"extendedTimeOut": "1000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		};
+
+		function getSettingsFromCookies(){
+			var originalTweet = Cookies.get("originalTweet", cookieOpts);
+
+			$("#originalTweet").val(originalTweet);
+		}
+
+		$(document).ready(function(){
+			resetBuffer();
+			getSettingsFromCookies();
+			transferTextToBuffer();
+		});
+
+		function padZero(i){
+			if(i >= 10)
+				return i.toString();
+			else
+				return "0" + i.toString();
+		}
+
+		function flushBuffer(){
+			if(currBuf.length > 0){
+				currBuf = currBuf.trim();
+				completeSplit.push(currBuf);
+				currBuf = "";
+			}
+		}
+
+		function addToBuffer(para){
+			if(currBuf + para.length < maxLength){
+				currBuf += para;
+			}else{
+				var splitPara = para.split(" ");
+
+				for(var paraIdx = 0; paraIdx < splitPara.length; paraIdx++){
+					var currWord = splitPara[paraIdx];
+
+					if(currWord != "\n")
+						currWord = " " + currWord;
+
+					if(currBuf.length + currWord.length > maxLength){
+						flushBuffer();
+
+						currWord = currWord.trim(); // Trim whitespace since we have an empty buffer
+					}
+
+					currBuf += currWord;
+				}
+			}
+		}
+
+		function writeBuffer(){
+			var finalHTML = "";
+			var totalTweets = padZero(completeSplit.length);
+
+			for(var splitIdx = 0; splitIdx < completeSplit.length; splitIdx++){
+				var currTweetIdx = padZero(splitIdx + 1);
+				var currTag = " (" + currTweetIdx + "/" + totalTweets + ")";
+				var currTweet = completeSplit[splitIdx].replace(/\n/g, "<br/>");
+
+				if(splitIdx > 0)
+					currTweet = ellipse + currTweet;
+
+				if(splitIdx != (completeSplit.length - 1))
+					currTweet = currTweet + ellipse;
+
+				currTweet += currTag;
+
+				if(splitIdx % 2 == 0){
+					var style = "style='background-color: #F4F4F4;'";
+				}else{
+					var style = "style='background-color: #FFF;'";
+				}
+
+				finalHTML += "<p scott-countTag='" + currTag.trim() + "' class='tweet' id='tweet" + currTweetIdx + "' " + style + ">" + currTweet + "</p>";
+			}
+
+			$("#resultTweets").html(finalHTML);
+		}
+
+		function resetBuffer(){
+			currBuf = "";
+			completeSplit = [];
+		}
+
+		function transferTextToBuffer(){
+			var orig = $("#originalTweet").val().trim();
+			var paraSplit = orig.split("\n");
+
+			Cookies.set("originalTweet", orig, cookieOpts);
+
+			for(var i = 0; i < paraSplit.length; i++){
+				var currPara = paraSplit[i].trim();
+
+					if(i != 0)
+						currPara = "\n" + currPara;
+
+					addToBuffer(currPara);
+			}
+
+			flushBuffer();
+			writeBuffer();
+		}
+
+		$("#originalTweet").keyup(function(){
+			resetBuffer();
+			transferTextToBuffer();
+		});
+
+		$("body").on("click", ".tweet", function(){
+			var tweet = $(this).text();
+			var tweetCount = $(this).attr("scott-countTag");
+
+			console.log(tweet.length);
+
+			var range = document.createRange();
+			range.selectNode(this);
+			window.getSelection().removeAllRanges();
+			window.getSelection().addRange(range);
+			document.execCommand("copy");
+			window.getSelection().removeAllRanges();
+
+			$(this).css("border", "2px solid green");
+			$(this).css("background-color", "#bbf1ba");
+
+			toastr["success"]("Tweet copied! " + tweetCount, "Tweeter by Scott");
+		});
+	</script>
+</html>
