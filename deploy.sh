@@ -5,6 +5,7 @@ exclude_from_deploy=(
 	"deploy.sh"
 	"LICENSE"
 	"README.md"
+	".git"
 )
 exclusion_args=""
 
