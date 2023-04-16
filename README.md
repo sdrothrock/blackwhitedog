@@ -1,6 +1,7 @@
-# [blackwhitedog.com](https://blackwhitedog.com)
+# Scott Rothrock's personal site
 
-Simple static splash page for [blackwhitedog.com](https://blackwhitedog.com)
+ - Static splash page for [blackwhitedog.com](https://blackwhitedog.com)
+ - Unlinked tweet splitting tool prototype
 
 # Licenses
 
