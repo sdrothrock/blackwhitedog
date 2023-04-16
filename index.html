@@ -20,19 +20,28 @@
 				padding-right: 0.4em;
 			}
 
-			.fa-gitlab{
+			/* Override :hover because Bulma makes them dark grey on mouseover */
+			.github, .github:hover{
+				color: black;
+			}
+
+			.gitlab, .gitlab:hover{
 				color: #fc6d26;
 			}
 
-			.fa-twitter{
+			.twitter, .twitter:hover{
 				color: #00acee;
 			}
 
-			.fa-envelope{
+			.blog, .blog:hover{
+				color: #444444;
+			}
+
+			.mail, .mail:hover{
 				color: #d44638;
 			}
 
-			.fa-instagram{
+			.instagram, .instagram:hover{
 				/* Found at https://codepad.co/snippet/instagram-icon-gradient-with-font-awesome */
 				background: #d6249f;
 				background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);
@@ -41,32 +50,34 @@
 			}
 		</style>
 
-		<link href="/fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet" />
+		<link href="/fontawesome-free-6.4.0-web/css/all.css" rel="stylesheet" />
 	</head>
 
 	<body>
-		<section class="section is-large">
-			<div class="container has-text-centered" role="banner">
-				<img id="splash-img" src="img/noa-splash.jpg" alt="A digital watercolor painting of a shaggy black dog with a white streak under her mouth and down her chest." />
+		<section class="section is-large is-flex is-vcentered">
+			<div class="container">
+				<div class="columns">
+					<div class="column has-text-centered">
+						<img id="splash-img" src="img/noa-splash.jpg" alt="A digital watercolor painting of a shaggy black dog with a white streak under her mouth and down her chest." role="banner" />
 
-				<h1 class="title is-1" role="main" aria-label="Primary">
-					Scott Rothrock
-				</h1>
+						<h1 class="title is-1" role="main" aria-label="Primary">
+							Scott Rothrock
+						</h1>
 
-				<p class="subtitle" role="description">
-		  		Full Stack Engineer
-					<br/>
-					Tokyo, Japan
-				</p>
-
-				<div class="columns is-gapless" role="navigation">
-					<div class="column is-half has-text-right-tablet">
-					<a href="https://gitlab.com/sdrothrock" class="logo-link" alt="Gitlab" title="Gitlab"><i class="fab fa-gitlab"></i></a>
-					<a href="mailto:scottintokyo@blackwhitedog.com" class="logo-link" alt="email" title="email"><i class="fas fa-envelope"></i></a>
-					</div>
-					<div class="column is-half has-text-left-tablet">
-					<a href="https://instagram.com/sukoxtuto" class="logo-link" alt="Instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
-					<a href="https://twitter.com/sukoxtuto" class="logo-link" alt="Twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
+						<p class="subtitle" role="description">
+							Full Stack Engineer
+							<br/>
+							Tokyo, Japan
+						</p>
+						
+						<p role="navigation">
+						<a href="https://github.com/sdrothrock" class="logo-link github" alt="Github" title="Github"><i class="fa-brands fa-github"></i></a>
+						<a href="https://gitlab.com/sdrothrock" class="logo-link gitlab" alt="Gitlab" title="Gitlab"><i class="fa-brands fa-gitlab"></i></a>
+						<a href="mailto:scottintokyo@blackwhitedog.com" class="logo-link mail" alt="email" title="email"><i class="fa-regular fa-envelope"></i></a>
+						<a href="/" class="logo-link blog" alt="Blog (coming soon)" title="Blog (coming soon)"><i class="fa-solid fa-file-lines"></i></a>
+						<a href="https://instagram.com/sukoxtuto" class="logo-link instagram" alt="Instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+						<a href="https://twitter.com/sukoxtuto" class="logo-link twitter" alt="Twitter" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+						</p>
 					</div>
 				</div>
 			</div>
