@@ -6,6 +6,7 @@ exclude_from_deploy=(
     "LICENSE"
     "README.md"
     ".git"
+    "*.swp"
 )
 exclusion_args=""
 
