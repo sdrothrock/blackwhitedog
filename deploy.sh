@@ -1,6 +1,6 @@
 #!/bin/bash
 
-deploy_target="../current/"
+deploy_target="/home/www/"
 exclude_from_deploy=(
     "deploy.sh"
     "LICENSE"
@@ -20,6 +20,7 @@ echo "Excluding: ${exclude_from_deploy[@]}"
 
 deploy() {
     rsync -av --delete ./ $deploy_target $exclusion_args
+    chown -R www:www /home/www
 }
 
 deploy
